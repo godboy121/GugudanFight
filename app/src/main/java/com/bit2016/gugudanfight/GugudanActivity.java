@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +29,9 @@ public class GugudanActivity extends AppCompatActivity {
     private Timer timer=new Timer();
     private TextView textView;
     private TextView textView2;
+    private TextView textView3;
+    private static int correct_num=0;
+    private static int challenge_num=0;
 
 
 
@@ -36,23 +40,16 @@ public class GugudanActivity extends AppCompatActivity {
         int dan=random.nextInt(8)+2;
         int num=random.nextInt(9)+1;
         int value=dan*num;
-        textView2=(TextView)findViewById(R.id.textView5);
-        textView2.setText(dan+"*"+num+"=");
-       hash_set(value);
+        textView2=(TextView)findViewById(R.id.textView1);
+        textView2.setText(correct_num+"/"+challenge_num);
+        textView3=(TextView)findViewById(R.id.textView5);
+        textView3.setText(dan+"*"+num+"=");
 
-
-
-
-
-    }
-
-    public void hash_set(int value){//버튼에 답이 포함된 수를 넣어주는 함수
-
+//hash값에 정답을 포함한 값을 넣는 부분
         Set<Integer> set=new HashSet<Integer>();//hash는 중복된 값을 넣어도 안넣어진다
         set.add(value);//초기 답을 먼저 hash에 저장
         while(set.size()<button.length){//버튼 갯수만큼 돌리고
-            Random random = new Random();
-           int value1=random.nextInt(80)+2;//난수생성
+            int value1=random.nextInt(80)+2;//난수생성
             set.add(value1);//hash에 저장
 
         }
@@ -71,15 +68,31 @@ public class GugudanActivity extends AppCompatActivity {
             btn[i].setText(""+list.get(i));
         }
 
-
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gugudan);
-        int value;
+
         show();
+        int id=R.id.button1;//배열로 접근하기위해 button1의 값을 id에 저장
+        for(int i=0;i<9;i++){
+            findViewById(id+i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    challenge_num++;
+
+
+                    //Toast.makeText(GugudanActivity.this,"",Toast.LENGTH_SHORT).show();
+
+                    show();
+
+                }
+            });
+        }
+
 
 
         textView=(TextView)findViewById(R.id.textView3);
@@ -104,6 +117,7 @@ public class GugudanActivity extends AppCompatActivity {
                 timer.cancel();
                 Intent intent = new Intent(GugudanActivity.this, ResultActivity.class);
                 startActivity(intent);
+                challenge_num=0;
                 finish();
             }
             runOnUiThread(new Runnable() {
